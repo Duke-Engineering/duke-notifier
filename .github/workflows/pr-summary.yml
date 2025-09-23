@@ -1,0 +1,44 @@
+name: PR Summary
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate PR Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const summary = files.reduce((acc, file) => {
+              acc.changes += file.changes;
+              acc.additions += file.additions;
+              acc.deletions += file.deletions;
+              return acc;
+            }, { changes: 0, additions: 0, deletions: 0 });
+
+            const body = `## PR Summary
+
+            🔍 Changes: ${summary.changes} lines
+            ✨ Additions: ${summary.additions} lines
+            🗑️ Deletions: ${summary.deletions} lines
+
+            ### Modified Files
+            ${files.map(f => `- ${f.filename} (${f.changes} changes)`).join('\n')}`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });

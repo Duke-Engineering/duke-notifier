@@ -1,0 +1,25 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts", "./src/react/index.ts"],
+  "out": "docs",
+  "name": "Duke Prompts Documentation",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "categorizeByGroup": true,
+  "categoryOrder": ["Core", "React", "Types", "*"],
+  "navigationLinks": {
+    "GitHub": "https://github.com/Duke/duke-prompts"
+  },
+  "sidebarLinks": {
+    "API Reference": "https://github.com/Duke/duke-prompts#api-reference"
+  },
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  },
+  "plugin": ["typedoc-plugin-markdown"]
+}
