@@ -6,6 +6,12 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+  workflow_dispatch:
+
+# Ensure we only run one tag creation at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test-and-tag:
@@ -48,10 +54,28 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create tag
+      - name: Create and push tag
         if: steps.check_tag.outputs.exists == 'false'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git tag -a "v${{ steps.package-version.outputs.current-version}}" -m "Release v${{ steps.package-version.outputs.current-version}}"
-          git push origin "v${{ steps.package-version.outputs.current-version}}"
+          # Force push in case tag exists remotely but not locally
+          git push origin --force "v${{ steps.package-version.outputs.current-version}}"
+
+      - name: Wait for release workflow
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          # Wait for up to 5 minutes for the release workflow to start
+          for i in {1..30}; do
+            echo "Checking for release workflow (attempt $i)..."
+            if gh run list --workflow=release.yml --event=push --json conclusion,status,headBranch --jq '.[] | select(.headBranch=="v${{ steps.package-version.outputs.current-version}}")' | grep -q .; then
+              echo "Release workflow found!"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Release workflow did not start within timeout"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
