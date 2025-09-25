@@ -38,7 +38,8 @@
     "prepublishOnly": "npm run build",
     "docs": "typedoc --out docs src/",
     "clean": "rm -rf dist coverage docs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
     "type": "git",

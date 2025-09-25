@@ -1,4 +1,4 @@
-name: Auto Tag
+name: Auto Tag and Version Bump
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Required for identifying tags
+          fetch-depth: 0 # Required for full history and conventional commits analysis
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
@@ -41,35 +41,65 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-      - name: Get version from package.json
-        id: package-version
+      - name: Get current version
+        id: current-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - name: Check if tag exists
-        id: check_tag
+      - name: Determine version bump
+        id: version-bump
         run: |
-          if git rev-parse "v${{ steps.package-version.outputs.current-version}}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+          # Install conventional-changelog-cli globally
+          npm install -g conventional-changelog-cli conventional-recommended-bump
 
-      - name: Create and push tag
-        if: steps.check_tag.outputs.exists == 'false'
+          # Determine bump type based on conventional commits
+          BUMP_TYPE=$(npx conventional-recommended-bump -p angular)
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+          # Get the current version
+          CURRENT_VERSION=${{ steps.current-version.outputs.current-version }}
+
+          # Calculate new version based on bump type
+          if [ "$BUMP_TYPE" = "major" ]; then
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$1 = $1 + 1; $2 = 0; $3 = 0} {print $1"."$2"."$3}')
+          elif [ "$BUMP_TYPE" = "minor" ]; then
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$2 = $2 + 1; $3 = 0} {print $1"."$2"."$3}')
+          else
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$3 = $3 + 1} {print $1"."$2"."$3}')
+          fi
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version in package.json
+        run: npm version ${{ steps.version-bump.outputs.new_version }} --no-git-tag-version
+
+      - name: Generate Release Notes
+        id: release-notes
+        run: |
+          # Generate release notes from conventional commits
+          conventional-changelog -p angular -i CHANGELOG.md -s -r 1 > RELEASE_NOTES.md
+          # Save release notes to output
+          echo "NOTES<<EOF" >> $GITHUB_OUTPUT
+          cat RELEASE_NOTES.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a "v${{ steps.package-version.outputs.current-version}}" -m "Release v${{ steps.package-version.outputs.current-version}}"
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "chore(release): bump version to ${{ steps.version-bump.outputs.new_version }} [skip ci]"
+          git push      - name: Create and push tag
+          # Create annotated tag with release notes
+          echo "${{ steps.release-notes.outputs.NOTES }}" > tag_message.txt
+          git tag -a "v${{ steps.version-bump.outputs.new_version }}" -F tag_message.txt
           # Force push in case tag exists remotely but not locally
-          git push origin --force "v${{ steps.package-version.outputs.current-version}}"
+          git push origin --force "v${{ steps.version-bump.outputs.new_version }}"
 
       - name: Wait for release workflow
-        if: steps.check_tag.outputs.exists == 'false'
         run: |
           # Wait for up to 5 minutes for the release workflow to start
           for i in {1..30}; do
             echo "Checking for release workflow (attempt $i)..."
-            if gh run list --workflow=release.yml --event=push --json conclusion,status,headBranch --jq '.[] | select(.headBranch=="v${{ steps.package-version.outputs.current-version}}")' | grep -q .; then
+            if gh run list --workflow=release.yml --event=push --json conclusion,status,headBranch --jq '.[] | select(.headBranch=="v${{ steps.version-bump.outputs.new_version }}")' | grep -q .; then
               echo "Release workflow found!"
               exit 0
             fi
