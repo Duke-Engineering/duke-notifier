@@ -81,6 +81,8 @@
     "@types/react": "^19.1.13",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
+    "conventional-changelog-cli": "^5.0.0",
+    "conventional-recommended-bump": "^11.2.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

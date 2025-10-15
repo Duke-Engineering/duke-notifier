@@ -18,17 +18,17 @@ A comprehensive, type-safe real-time notification system for e-commerce applicat
 # NPM
 npm install duke @supabase/supabase-js
 # or install from GitHub
-npm install github:Duke-Engineering/duke-prompts
+npm install github:Duke-Engineering/duke-notifier
 
 # Yarn
 yarn add duke @supabase/supabase-js
 # or install from GitHub
-yarn add github:Duke-Engineering/duke-prompts
+yarn add github:Duke-Engineering/duke-notifier
 
 # PNPM
 pnpm add duke @supabase/supabase-js
 # or install from GitHub
-pnpm add github:Duke-Engineering/duke-prompts
+pnpm add github:Duke-Engineering/duke-notifier
 ```
 
 ## 🏗️ Database Setup
@@ -166,19 +166,16 @@ export async function notifyOrderCreated(orderData: {
   orderValue: number;
   priority?: 'low' | 'normal' | 'high' | 'urgent';
 }) {
-  const result = await OrderNotificationManager.dispatchOrderNotification(
-    supabase,
-    {
-      orderId: orderData.orderId,
-      targetSuppliers: [orderData.supplierId],
-      notificationType: 'order_created',
-      metadata: {
-        customerName: orderData.customerName,
-        orderValue: orderData.orderValue,
-        priority: orderData.priority || 'normal'
-      }
-    }
-  );
+  const result = await OrderNotificationManager.dispatchOrderNotification(supabase, {
+    orderId: orderData.orderId,
+    targetSuppliers: [orderData.supplierId],
+    notificationType: 'order_created',
+    metadata: {
+      customerName: orderData.customerName,
+      orderValue: orderData.orderValue,
+      priority: orderData.priority || 'normal',
+    },
+  });
 
   if (!result.success) {
     console.error('Failed to send notification:', result.error);
@@ -202,7 +199,7 @@ import type {
   SoundKey,
   SoundConfig,
   DispatchNotificationData,
-  DispatchResult
+  DispatchResult,
 } from 'duke';
 ```
 
@@ -247,7 +244,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 // Enable debug logging
 const manager = new OrderNotificationManager({
   ...config,
-  debug: true // Enables verbose logging
+  debug: true, // Enables verbose logging
 });
 ```
 
@@ -257,34 +254,32 @@ const manager = new OrderNotificationManager({
 
 ```typescript
 class OrderNotificationManager {
-  constructor(config: OrderNotificationConfig)
+  constructor(config: OrderNotificationConfig);
 
-  async initialize(): Promise<void>
-  async testNotification(type?: string): Promise<void>
-  setOnNotification(callback: NotificationEventHandler): void
-  destroy(): void
+  async initialize(): Promise<void>;
+  async testNotification(type?: string): Promise<void>;
+  setOnNotification(callback: NotificationEventHandler): void;
+  destroy(): void;
 
-  get ready(): boolean
-  get availableSounds(): string[]
+  get ready(): boolean;
+  get availableSounds(): string[];
 
   static async dispatchOrderNotification(
     supabase: SupabaseClient,
     data: DispatchNotificationData,
     tableName?: string
-  ): Promise<DispatchResult>
+  ): Promise<DispatchResult>;
 }
 ```
 
 ### useOrderNotifications Hook
 
 ```typescript
-function useOrderNotifications(
-  config: OrderNotificationConfig
-): {
+function useOrderNotifications(config: OrderNotificationConfig): {
   manager: OrderNotificationManager | null;
   isReady: boolean;
   error: Error | null;
-}
+};
 ```
 
 ## 🤝 Contributing
