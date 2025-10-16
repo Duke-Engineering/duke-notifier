@@ -9,7 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderNotificationManager = void 0;
+exports.OrderNotificationManager = exports.isProcessedNotification = exports.isOrderNotification = void 0;
+var types_1 = require("./types");
+Object.defineProperty(exports, "isOrderNotification", { enumerable: true, get: function () { return types_1.isOrderNotification; } });
+Object.defineProperty(exports, "isProcessedNotification", { enumerable: true, get: function () { return types_1.isProcessedNotification; } });
 class OrderNotificationManager {
     constructor(config) {
         var _a, _b, _c;

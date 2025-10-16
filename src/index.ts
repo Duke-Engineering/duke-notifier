@@ -10,6 +10,21 @@ import {
   UserRole,
 } from './types';
 
+// Re-export types for consumer convenience
+export type {
+  DispatchNotificationData,
+  DispatchResult,
+  NotificationMetadata,
+  OrderNotification,
+  OrderNotificationConfig,
+  ProcessedNotification,
+  SoundConfig,
+  UserRole,
+  NotificationType,
+  AudioKeys,
+} from './types';
+export { isOrderNotification, isProcessedNotification } from './types';
+
 export class OrderNotificationManager {
   private supabase: SupabaseClient;
   private userId: string;

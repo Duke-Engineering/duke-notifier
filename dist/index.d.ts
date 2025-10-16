@@ -1,5 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { DispatchNotificationData, DispatchResult, OrderNotificationConfig, ProcessedNotification } from './types';
+export type { DispatchNotificationData, DispatchResult, NotificationMetadata, OrderNotification, OrderNotificationConfig, ProcessedNotification, SoundConfig, UserRole, NotificationType, AudioKeys, } from './types';
+export { isOrderNotification, isProcessedNotification } from './types';
 export declare class OrderNotificationManager {
     private supabase;
     private userId;
