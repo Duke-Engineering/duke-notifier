@@ -17,18 +17,18 @@ A comprehensive, type-safe real-time notification system for e-commerce applicat
 ```bash
 # NPM
 npm install duke @supabase/supabase-js
-# or install from GitHub
-npm install github:Duke-Engineering/duke-notifier
+# or install pre-built version from GitHub
+npm install github:Duke-Engineering/duke-notifier#dist
 
 # Yarn
 yarn add duke @supabase/supabase-js
-# or install from GitHub
-yarn add github:Duke-Engineering/duke-notifier
+# or install pre-built version from GitHub
+yarn add github:Duke-Engineering/duke-notifier#dist
 
 # PNPM
 pnpm add duke @supabase/supabase-js
-# or install from GitHub
-pnpm add github:Duke-Engineering/duke-notifier
+# or install pre-built version from GitHub
+pnpm add github:Duke-Engineering/duke-notifier#dist
 ```
 
 ## 🏗️ Database Setup
