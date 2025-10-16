@@ -1,0 +1,35 @@
+import { SupabaseClient } from '@supabase/supabase-js';
+import { DispatchNotificationData, DispatchResult, OrderNotificationConfig, ProcessedNotification } from './types';
+export declare class OrderNotificationManager {
+    private supabase;
+    private userId;
+    private userRole;
+    private audioFiles;
+    private subscription;
+    private isInitialized;
+    private defaultSounds;
+    private customSounds;
+    private sounds;
+    private onNotificationCallback?;
+    private enableBrowserNotifications;
+    private tableName;
+    private channelName;
+    constructor(config: OrderNotificationConfig);
+    initialize(): Promise<void>;
+    private requestBrowserNotificationPermission;
+    private preloadAudio;
+    private setupRealtimeSubscription;
+    private handleNotification;
+    private shouldPlayNotification;
+    private playNotificationSound;
+    private determineSoundKey;
+    private showBrowserNotification;
+    private getNotificationTitle;
+    private getNotificationBody;
+    static dispatchOrderNotification(supabase: SupabaseClient, orderData: DispatchNotificationData, tableName?: string): Promise<DispatchResult>;
+    setOnNotification(callback: (notification: ProcessedNotification) => void): void;
+    testNotification(type?: string): Promise<void>;
+    get ready(): boolean;
+    get availableSounds(): string[];
+    destroy(): void;
+}
