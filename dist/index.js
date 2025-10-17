@@ -121,7 +121,7 @@ class OrderNotificationManager {
             const { order_id, target_suppliers = [], notification_type = 'default', metadata = {}, } = notification;
             console.log('Received notification:', notification);
             // Determine if this user should receive the notification
-            const shouldPlay = this.shouldPlayNotification(target_suppliers, notification_type);
+            const shouldPlay = this.shouldPlayNotification(target_suppliers);
             if (shouldPlay) {
                 yield this.playNotificationSound(notification_type, metadata);
                 // Show browser notification if enabled
@@ -140,7 +140,7 @@ class OrderNotificationManager {
             }
         });
     }
-    shouldPlayNotification(targetSuppliers, _notificationType) {
+    shouldPlayNotification(targetSuppliers) {
         // Always play for ops role
         if (this.userRole === 'ops' || this.userRole === 'admin') {
             return true;
