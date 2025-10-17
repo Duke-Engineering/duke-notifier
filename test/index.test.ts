@@ -100,12 +100,12 @@ describe('OrderNotificationManager', () => {
         ...defaultConfig,
         userRole: 'ops',
       });
-      expect(opsManager['shouldPlayNotification']([], 'default')).toBe(true);
+      expect(opsManager['shouldPlayNotification']([])).toBe(true);
     });
 
     it('should determine correct playback for supplier role', () => {
-      expect(manager['shouldPlayNotification'](['test-user'], 'default')).toBe(true);
-      expect(manager['shouldPlayNotification'](['other-user'], 'default')).toBe(false);
+      expect(manager['shouldPlayNotification'](['test-user'])).toBe(true);
+      expect(manager['shouldPlayNotification'](['other-user'])).toBe(false);
     });
   });
 

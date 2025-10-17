@@ -164,7 +164,7 @@ export class OrderNotificationManager {
     console.log('Received notification:', notification);
 
     // Determine if this user should receive the notification
-    const shouldPlay = this.shouldPlayNotification(target_suppliers, notification_type);
+    const shouldPlay = this.shouldPlayNotification(target_suppliers);
 
     if (shouldPlay) {
       await this.playNotificationSound(notification_type, metadata);
@@ -186,7 +186,7 @@ export class OrderNotificationManager {
     }
   }
 
-  private shouldPlayNotification(targetSuppliers: string[], _notificationType: string): boolean {
+  private shouldPlayNotification(targetSuppliers: string[]): boolean {
     // Always play for ops role
     if (this.userRole === 'ops' || this.userRole === 'admin') {
       return true;
