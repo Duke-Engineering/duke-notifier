@@ -43,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Duke/duke-prompts.git"
+    "url": "git+https://github.com/Duke-Engineering/duke-notifier.git"
   },
   "keywords": [
     "notifications",
@@ -63,9 +63,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Duke/duke-prompts/issues"
+    "url": "https://github.com/Duke-Engineering/duke-notifier/issues"
   },
-  "homepage": "https://github.com/Duke/duke-prompts#readme",
+  "homepage": "https://github.com/Duke-Engineering/duke-notifier#readme",
   "engines": {
     "node": ">=18.0.0"
   },
