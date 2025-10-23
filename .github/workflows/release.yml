@@ -41,14 +41,10 @@ jobs:
           tag: ${{ github.ref }}
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./duke-prompts.zip
-          asset_name: duke-prompts.zip
-          asset_content_type: application/zip
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload ${{ github.ref }} duke-prompts.zip --clobber
 
       - uses: eregon/publish-release@v1
         env:
