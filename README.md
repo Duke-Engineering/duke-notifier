@@ -16,17 +16,17 @@ A comprehensive, type-safe real-time notification system for e-commerce applicat
 
 ```bash
 # NPM
-npm install duke @supabase/supabase-js
+npm install tendo-notifier @supabase/supabase-js
 # or install pre-built version from GitHub
 npm install github:Duke-Engineering/duke-notifier#dist
 
 # Yarn
-yarn add duke @supabase/supabase-js
+yarn add tendo-notifier @supabase/supabase-js
 # or install pre-built version from GitHub
 yarn add github:Duke-Engineering/duke-notifier#dist
 
 # PNPM
-pnpm add duke @supabase/supabase-js
+pnpm add tendo-notifier @supabase/supabase-js
 # or install pre-built version from GitHub
 pnpm add github:Duke-Engineering/duke-notifier#dist
 ```
@@ -104,7 +104,7 @@ export const supabase = createClient<Database>(
 ```typescript
 // components/OrderDashboard.tsx
 import React from 'react';
-import { useOrderNotifications } from 'duke/react';
+import { useOrderNotifications } from 'tendo-notifier/react';
 import { supabase } from '@/lib/supabase';
 
 interface Props {
@@ -156,7 +156,7 @@ export const OrderDashboard: React.FC<Props> = ({ userId, userRole }) => {
 
 ```typescript
 // lib/notifications.ts
-import { OrderNotificationManager } from 'duke';
+import { OrderNotificationManager } from 'tendo-notifier';
 import { supabase } from './supabase';
 
 export async function notifyOrderCreated(orderData: {
@@ -200,7 +200,7 @@ import type {
   SoundConfig,
   DispatchNotificationData,
   DispatchResult,
-} from 'duke';
+} from 'tendo-notifier';
 ```
 
 ## 🔐 Environment Variables
@@ -294,7 +294,7 @@ function useOrderNotifications(config: OrderNotificationConfig): {
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/duke.git
+git clone https://github.com/yourusername/duke-notifier.git
 
 # Install dependencies
 npm install
