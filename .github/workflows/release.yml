@@ -8,9 +8,8 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
+    permissions: "write-all"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -32,23 +31,24 @@ jobs:
       - name: Zip dist directory
         run: cd dist && zip -r ../duke-prompts.zip .
 
-      - name: Create Release
+      - name: Create Release and Upload Asset
         id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $TAG = ${{ github.ref }}.replace('refs/tags/', '')
+          gh release create $TAG 'duke-prompts.zip#Duke Prompts' --title "Release $TAG" --generate-notes
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to npm
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js # Setup .npmrc file to publish to npm
+        uses: actions/setup-node@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./duke-prompts.zip
-          asset_name: duke-prompts.zip
-          asset_content_type: application/zip
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org/"
+      - run: npm ci
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
