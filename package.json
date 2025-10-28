@@ -7,11 +7,20 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./react": {
       "types": "./dist/react/index.d.ts",
+      "require": "./dist/react/index.js",
       "default": "./dist/react/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/react/index.d.ts"
+      ]
     }
   },
   "sideEffects": false,
@@ -24,7 +33,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc",
-    "postbuild": "cp -r sounds dist/",
+    "postbuild": "cp -r sounds dist/ && node scripts/generate-react-package.js",
     "test": "jest",
     "test:coverage": "jest --coverage --maxWorkers=2",
     "test:watch": "jest --watch",
