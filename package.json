@@ -1,6 +1,6 @@
 {
   "name": "tendo-notifier",
-  "version": "0.1.76-preview",
+  "version": "0.1.81",
   "description": "A comprehensive, type-safe real-time notification system for e-commerce applications using Tendo and React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
