@@ -16,8 +16,13 @@ function useOrderNotifications(config) {
     const [manager, setManager] = (0, react_1.useState)(null);
     const [isReady, setIsReady] = (0, react_1.useState)(false);
     const [error, setError] = (0, react_1.useState)(null);
+    // check if the config has changed
+    const configRef = (0, react_1.useRef)(config);
+    const notificationManager = new __1.OrderNotificationManager(config);
     (0, react_1.useEffect)(() => {
-        const notificationManager = new __1.OrderNotificationManager(config);
+        if (configRef.current === config)
+            return;
+        configRef.current = config;
         notificationManager
             .initialize()
             .then(() => {
@@ -34,7 +39,7 @@ function useOrderNotifications(config) {
                 notificationManager.destroy();
             }
         };
-    }, [config]); // Re-initialize if config changes
+    }, [configRef.current]); // Re-initialize if config changes
     const testNotification = (...args_1) => __awaiter(this, [...args_1], void 0, function* (type = 'default') {
         if (manager) {
             yield manager.testNotification(type);
