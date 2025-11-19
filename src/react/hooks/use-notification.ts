@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { OrderNotificationManager } from '../..';
 import { OrderNotificationConfig } from '../../types';
 
@@ -16,9 +16,13 @@ export function useOrderNotifications(
   const [isReady, setIsReady] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const notificationManager = new OrderNotificationManager(config);
+  // check if the config has changed
+  const configRef = useRef(config);
 
+  const notificationManager = new OrderNotificationManager(config);
+  useEffect(() => {
+    if (configRef.current === config) return;
+    configRef.current = config;
     notificationManager
       .initialize()
       .then(() => {
@@ -36,7 +40,7 @@ export function useOrderNotifications(
         notificationManager.destroy();
       }
     };
-  }, [config]); // Re-initialize if config changes
+  }, [configRef.current]); // Re-initialize if config changes
 
   const testNotification = async (type: string = 'default'): Promise<void> => {
     if (manager) {
